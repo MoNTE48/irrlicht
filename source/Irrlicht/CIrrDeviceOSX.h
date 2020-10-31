@@ -121,49 +121,54 @@ namespace irr
 		public:
 
 			CCursorControl(const core::dimension2d<u32>& wsize, CIrrDeviceMacOSX *device)
-				: WindowSize(wsize), InvWindowSize(0.0f, 0.0f), Device(device), IsVisible(true), UseReferenceRect(false)
+				: InvWindowSize(0.0f, 0.0f), Device(device), IsVisible(true), UseReferenceRect(false)
 			{
+                updateWindowSize(wsize);
 				CursorPos.X = CursorPos.Y = 0;
-				if (WindowSize.Width!=0)
-					InvWindowSize.Width = 1.0f / WindowSize.Width;
-				if (WindowSize.Height!=0)
-					InvWindowSize.Height = 1.0f / WindowSize.Height;
 			}
+            void updateWindowSize(const core::dimension2du& size)
+            {
+                WindowSize = size;
+                if (WindowSize.Width != 0)
+                    InvWindowSize.Width = 1.0f / WindowSize.Width;
+                if (WindowSize.Height != 0)
+                    InvWindowSize.Height = 1.0f / WindowSize.Height;
+            }
 
 			//! Changes the visible state of the mouse cursor.
-			virtual void setVisible(bool visible)
+			virtual void setVisible(bool visible) _IRR_OVERRIDE_
 			{
 				IsVisible = visible;
 				Device->setCursorVisible(visible);
 			}
 
 			//! Returns if the cursor is currently visible.
-			virtual bool isVisible() const
+			virtual bool isVisible() const _IRR_OVERRIDE_
 			{
 				return IsVisible;
 			}
 
 			//! Sets the new position of the cursor.
-			virtual void setPosition(const core::position2d<f32> &pos)
+			virtual void setPosition(const core::position2d<f32> &pos) _IRR_OVERRIDE_
 			{
 				setPosition(pos.X, pos.Y);
 			}
 
 			//! Sets the new position of the cursor.
-			virtual void setPosition(f32 x, f32 y)
+			virtual void setPosition(f32 x, f32 y) _IRR_OVERRIDE_
 			{
 				setPosition((s32)(x*WindowSize.Width), (s32)(y*WindowSize.Height));
 			}
 
 			//! Sets the new position of the cursor.
-			virtual void setPosition(const core::position2d<s32> &pos)
+			virtual void setPosition(const core::position2d<s32> &pos) _IRR_OVERRIDE_
 			{
 				if (CursorPos.X != pos.X || CursorPos.Y != pos.Y)
 					setPosition(pos.X, pos.Y);
 			}
 
 			//! Sets the new position of the cursor.
-			virtual void setPosition(s32 x, s32 y)
+			virtual void setPosition(s32 x, s32 y) _IRR_OVERRIDE_
 			{
 				if (UseReferenceRect)
 				{
@@ -195,7 +200,7 @@ namespace irr
 			}
 
 			//! Sets an absolute reference rect for calculating the cursor position.
-			virtual void setReferenceRect(core::rect<s32>* rect=0)
+			virtual void setReferenceRect(core::rect<s32>* rect=0) _IRR_OVERRIDE_
 			{
 				if (rect)
 				{
@@ -254,6 +259,7 @@ namespace irr
 		bool IsShiftDown;
 		bool IsControlDown;
 		bool IsResizable;
+        CGFloat NativeScale;
 	};
 
 
@@ -261,4 +267,3 @@ namespace irr
 
 #endif // _IRR_COMPILE_WITH_OSX_DEVICE_
 #endif // __C_IRR_DEVICE_MACOSX_H_INCLUDED__
-
